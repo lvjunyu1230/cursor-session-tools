@@ -150,4 +150,4 @@ root/subprojects/code/  → 依然记录到小项目
 
 ## License
 
-MIT — 随便用，改成你自己的也行。
+MIT 
