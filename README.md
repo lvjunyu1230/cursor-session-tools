@@ -1,52 +1,153 @@
 # cursor-session-tools
 
-Session logging tools for Cursor AI IDE. Includes two skills for initializing project documentation and recording session logs.
+> 让每一次 Cursor 对话都不被遗忘
 
-## Skills
+你有没有过这样的经历？在一个悠闲的下午，和 AI 完成了一场酣畅淋漓的coding讨论，改了十几个文件，做了无数个决策——然后第二天打开 Cursor，完全想不起昨天干了什么。
 
-### project-init
+**cursor-session-tools** 就是来解决这个问题的。
 
-Initialize project documentation structure. Creates `README.md` and `session-log.md` in `session-logs/{project-name}/`.
+## 它是什么
 
-**Trigger**: `/project-init`, "初始化项目", "新建项目"
+两个 Cursor Skill，形成完美的工作记录闭环：
 
-### session-log
+| Skill | 作用 | 触发方式 |
+|-------|------|----------|
+| **project-init** | 初始化项目文档结构 | `/project-init` |
+| **session-log** | 记录每次工作的摘要 | `/session-log` |
 
-Record current session work log. Searches upward from current directory to find the nearest `session-logs/{project-name}/session-log.md` and appends a structured entry.
+## 能做什么
 
-**Trigger**: `/session-log`, "记录 session", "记录一下", "log session"
+### 1. 一键初始化项目
 
-## Features
+```bash
+/project-init
+```
 
-- **Universal**: Works in any directory, no hardcoded paths
-- **Nested projects**: Supports parent-child project structure with "nearest wins" search
-- **Structured format**: Task, actions, tags, and file changes
-- **Tags**: Optional tags for filtering and aggregation
+自动创建：
 
-## Quick Start
+```
+project/
+└── session-logs/
+    └── my-project/
+        ├── README.md      # 项目入口，看一眼就懂
+        └── session-log.md # 工作日志，按时间线记录
+```
 
-1. Run `/project-init` to initialize a project
-2. Work on your project
-3. Run `/session-log` to record your session
+### 2. 一句话记录 session
 
-## Session Entry Format
+```bash
+/记录一下
+```
+
+自动生成：
+
+```markdown
+## 2026-05-28 14:51
+
+**任务**：重构用户认证模块
+
+**做了什么**：拆分了 AuthService，移除了过期的 JWT 逻辑
+
+**标签**：refactor, auth
+
+**文件变更**：
+修改：auth/service.ts, auth/middleware.ts
+新增：auth/types.ts
+```
+
+### 3. 智能嵌套支持
+
+大项目套小项目？没问题。自动找到**最近的**项目文档来记录。
+
+```
+root/                    → 记录到大项目
+root/subprojects/        → 记录到小项目
+root/subprojects/code/  → 依然记录到小项目
+```
+
+## 为什么需要它
+
+| 痛点 | 解决 |
+|------|------|
+| 每次都想不起昨天做了什么 | 时间线日志，一目了然 |
+| git log 太零散，看不出上下文 | 结构化记录，任务+操作+文件变更 |
+| 文档散落各处 | 统一在 `session-logs/` 下管理 |
+| 大项目下的小项目记录混乱 | 最近优先原则，智能嵌套 |
+
+## 安装
+
+把 `project-init` 和 `session-log` 两个文件夹放到你的 Cursor skill 目录：
+
+```
+~/.claude/skills/project-session/
+├── project-init/
+│   └── SKILL.md
+└── session-log/
+    └── SKILL.md
+```
+
+## 开始使用
+
+**第一步**：初始化项目
+
+```
+/project-init
+项目名：my-awesome-project
+目标：做一个很棒的东西
+```
+
+**第二步**：正常工作的同时，记下关键决策
+
+```
+/记录一下
+```
+
+**第三步**：想回顾项目进度？
+
+直接打开 `session-logs/my-awesome-project/session-log.md`，时间线清晰呈现。
+
+## Session 条目格式
 
 ```markdown
 ---
 
 ## {YYYY-MM-DD HH:MM}
 
-**任务**：{task description}
+**任务**：{一句话描述本次目标}
 
-**做了什么**：{actions and decisions}
+**做了什么**：{操作+决策}
 
-**标签**：{optional tags}
+**标签**：{可选，用逗号分隔}
 
 **文件变更**：
-修改：{modified files}
-新增：{new files}
+修改：{文件名}
+新增：{文件名}
+```
+
+## 项目状态一目了然
+
+每个项目都有 `README.md`：
+
+```markdown
+# my-awesome-project
+
+## 目标
+做一个很棒的东西
+
+## 状态
+- [x] 已完成核心功能
+- [ ] 添加测试
+
+## 重要进展记录
+| 日期 | 进展 |
+|------|------|
+| 2026-05-28 | 完成用户认证模块 |
+
+## Todo
+- [ ] 性能优化
+- [ ] 文档完善
 ```
 
 ## License
 
-MIT
+MIT — 随便用，改成你自己的也行。
